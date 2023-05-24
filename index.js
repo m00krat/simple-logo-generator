@@ -1,6 +1,47 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
+
+class Shape {
+    constructor(color) {
+      this.color = color;
+    }
+  
+    render() {
+      throw new Error('The render() method must be implemented in the child class.');
+    }
+  }
+  
+  class Triangle extends Shape {
+    constructor(color) {
+      super(color);
+    }
+  
+    render() {
+      return `<polygon points="100,180 200,180 150,80" fill="${this.color}" />`;
+    }
+  }
+  
+  class Circle extends Shape {
+    constructor(color) {
+      super(color);
+    }
+  
+    render() {
+      return `<circle cx="150" cy="100" r="50" fill="${this.color}" />`;
+    }
+  }
+  
+  class Square extends Shape {
+    constructor(color) {
+      super(color);
+    }
+  
+    render() {
+      return `<rect x="50" y="50" width="200" height="100" fill="${this.color}" />`;
+    }
+  }
+
 inquirer
   .prompt([
     {
@@ -39,26 +80,42 @@ inquirer
     const shapeColor = answers.shapeColor;
 
     //generates SVG content
-    const svgContent = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="300" height="200">
-      <text x="50" y="100" fill="${textColor}" font-size="24">${logoText}</text>
-      ${generateShapeMarkup(shape, shapeColor)}
-    </svg>
-    `;
+    const svgContent = generateSVGMarkup(logoText, textColor, shape, shapeColor);
 
     //writes SVG content to file
     fs.writeFileSync('logo.svg', svgContent);
 
     console.log('Generated logo.svg');
+
   });
 
 //helper function to generate chosen shape
-function generateShapeMarkup(shape, shapeColor) {
-  if (shape === 'circle') {
-    return `<circle cx="150" cy="100" r="50" fill="${shapeColor}" />`;
-  } else if (shape === 'triangle') {
-    return `<polygon points="150,20 275,180 25,180" fill="${shapeColor}" />`;
-  } else if (shape === 'square') {
-    return `<rect x="50" y="50" width="200" height="100" fill="${shapeColor}" />`;
+function generateSVGMarkup(logoText, textColor, shape, shapeColor) {
+    const shapeInstance = createShapeInstance(shape, shapeColor);
+  
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200">
+                  <style>
+                    text { font-family: sans-serif; font-size: 40px; fill: ${textColor}; text-anchor: middle; dominant-baseline: middle; }
+                  </style>
+                  ${shapeInstance.render()}
+                  <text x="150" y="100">${logoText}</text>
+                </svg>`;
+    return svg;
   }
+  
+  // Helper function to create the shape instance based on user input
+  function createShapeInstance(shape, shapeColor) {
+    switch (shape) {
+      case 'circle':
+        return new Circle(shapeColor);
+      case 'triangle':
+        return new Triangle(shapeColor);
+      case 'square':
+        return new Square(shapeColor);
+      default:
+        throw new Error(`Invalid shape: ${shape}`);
+    }
+
 }
+
+  
