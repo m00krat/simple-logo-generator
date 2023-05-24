@@ -1,4 +1,9 @@
 # Simple Logo Generator
+Deployed URL: https://m00krat.github.io/simple-logo-generator/
+
+Github Repo: https://github.com/m00krat/simple-logo-generator
+
+Video: https://drive.google.com/file/d/1iOF164d_nB0mGXDjob5RwvTXtj5hP1rR/view
 ## User Story
 AS a freelance web developer
 
